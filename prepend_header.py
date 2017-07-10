@@ -7,7 +7,7 @@ Command line usage: prepend_header FILE DIR [options]
 #!/usr/bin/python
 
 import argparse
-import glob
+import glob2
 import os
 
 def main():
@@ -31,17 +31,16 @@ def parse():
     print ("Please add a directory to include")
   if (args.rm):
     assert os.path.exists(args.rm), 'File path in exclude path is incorrect!'
-  #select_files(args.FILE, args.dir, args.add, args.rm)
-  insert_headers(args.FILE, args.DIR, args.add, args.rm)
+  select_files(args.FILE, args.DIR, args.add, args.rm)
+  #insert_headers(args.FILE, args.DIR, args.add, args.rm)
 
 def select_files(textfile, directory, include_files, exclude_files):
   acc = []
-  #  for x in os.walk(directory):
-  #   print x[0]
-  # for item in include_files:
-  #   for name in glob.glob(item):
-  #     count = count + 1
-  #     print (str(count) + (name))
+  count = 0
+  for item in include_files:
+    for name in glob2.glob(item):
+      count = count + 1
+      print (str(count) + (name))
 
 '''More optimized solution to add headers to file'''
 
