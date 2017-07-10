@@ -23,16 +23,23 @@ def parse():
                   help='add files matching the specified glob (prefixed with the base directory) to the processing queue')
   parser.add_argument('--rm', action="append",
                   help= 'remove files matching the specified glob (prefixed with the base directory) from the processing queue')
+  parser.add_argument('--verbose',
+                  help = "raise the verbosity level (log debug and information messages to the standard error stream)")
   args = parser.parse_args()
 
-  assert os.path.exists(args.FILE), " File path is incorrect! Couldn't find the text file at " + args.FILE
+  assert os.path.exists(args.FILE), "File path is incorrect! Couldn't find the text file at " + args.FILE
   assert os.path.isdir(args.DIR), 'Directory path is incorrect!'
   if (not args.add):
     print ("Please add a directory to include")
     error()
+    
   include_list = include(args.FILE, args.DIR, args.add, args.rm)
-  exclude_list = exclude(args.FILE, args.DIR, args.add, args.rm)
-  join(include_list, exclude_list)
+  if (not args.rm):
+    exclude_list = []
+  else:
+    exclude_list = exclude(args.FILE, args.DIR, args.add, args.rm)
+  acc = join(include_list, exclude_list)
+  insert_headers(args.FILE, acc)
 
 def include(textfile, directory, include_files, exclude_files):
   include_list = []
@@ -43,22 +50,24 @@ def include(textfile, directory, include_files, exclude_files):
 
 def exclude(textfile, directory, include_files, exclude_files):
   exclude_list = []
-  for item1 in exclude_files:
-    for name1 in glob2.glob(item1):
-      exclude_list.append(name1)
+  for item in exclude_files:
+    for name in glob2.glob(item):
+      exclude_list.append(name)
   return exclude_list
 
 def join(include, exclude):
   for excludefile in exclude:
     if excludefile in include:
       include.remove(excludefile)
+  return include
 
 '''More optimized solution to add headers to file'''
 
-def insert_headers(textfile, directory, include_files, exclude_files):
+def insert_headers(textfile, append_list):
   with open(textfile, 'r') as original:data1 = original.read()
-  with open('test.txt', 'r') as modified:data2 = modified.read()
-  with open('test.txt', 'w') as original:data = original.write(data1 + "\n" + data2)
+  for filename in append_list:
+    with open(filename, 'r') as modified:data2 = modified.read()
+    with open(filename, 'w') as original:data = original.write(data1 + data2)
 
 '''Append headers by first copying header to a temp tile, copy the content 
 of the file that header is being appended to'''
