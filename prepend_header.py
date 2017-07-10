@@ -21,7 +21,7 @@ def parse():
                   help='the path to the directory that contains the files to which the header will be prepended.')
   parser.add_argument('--add', action="append",
                   help='add files matching the specified glob (prefixed with the base directory) to the processing queue')
-  parser.add_argument('-rm', action="append",
+  parser.add_argument('--rm', action="append",
                   help= 'remove files matching the specified glob (prefixed with the base directory) from the processing queue')
   args = parser.parse_args()
 
@@ -29,18 +29,29 @@ def parse():
   assert os.path.isdir(args.DIR), 'Directory path is incorrect!'
   if (not args.add):
     print ("Please add a directory to include")
-  if (args.rm):
-    assert os.path.exists(args.rm), 'File path in exclude path is incorrect!'
-  select_files(args.FILE, args.DIR, args.add, args.rm)
-  #insert_headers(args.FILE, args.DIR, args.add, args.rm)
+    error()
+  include_list = include(args.FILE, args.DIR, args.add, args.rm)
+  exclude_list = exclude(args.FILE, args.DIR, args.add, args.rm)
+  join(include_list, exclude_list)
 
-def select_files(textfile, directory, include_files, exclude_files):
-  acc = []
-  count = 0
+def include(textfile, directory, include_files, exclude_files):
+  include_list = []
   for item in include_files:
     for name in glob2.glob(item):
-      count = count + 1
-      print (str(count) + (name))
+      include_list.append(name)
+  return include_list
+
+def exclude(textfile, directory, include_files, exclude_files):
+  exclude_list = []
+  for item1 in exclude_files:
+    for name1 in glob2.glob(item1):
+      exclude_list.append(name1)
+  return exclude_list
+
+def join(include, exclude):
+  for excludefile in exclude:
+    if excludefile in include:
+      include.remove(excludefile)
 
 '''More optimized solution to add headers to file'''
 
@@ -65,6 +76,9 @@ def add_headers(textfile, directory, include_files, exclude_files):
            f1.write(line)
           f1.close()
         f2.close()
+
+def error():
+  return 0
 
 if __name__ == "__main__":
   main()
