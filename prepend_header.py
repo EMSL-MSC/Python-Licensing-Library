@@ -8,6 +8,7 @@ Command line usage: prepend_header FILE DIR [options]
 
 import argparse
 import glob2
+import logging
 import os
 
 def main():
@@ -23,32 +24,59 @@ def parse():
                   help='add files matching the specified glob (prefixed with the base directory) to the processing queue')
   parser.add_argument('--rm', action="append",
                   help= 'remove files matching the specified glob (prefixed with the base directory) from the processing queue')
-  parser.add_argument('--verbose',
+  parser.add_argument('--verbose', action = "store_true",
                   help = "raise the verbosity level (log debug and information messages to the standard error stream)")
+  parser.add_argument('--version', action = 'version', version='%(prog)s version 1.0',
+                  help = "display the version")
   args = parser.parse_args()
 
   assert os.path.exists(args.FILE), "File path is incorrect! Couldn't find the text file at " + args.FILE
   assert os.path.isdir(args.DIR), 'Directory path is incorrect!'
   if (not args.add):
-    print ("Please add a directory to include")
-    error()
-    
-  include_list = include(args.FILE, args.DIR, args.add, args.rm)
-  if (not args.rm):
+    logging.error('--add field is required')
+  elif (args.add):
+    acc = process_files(args.add, args.rm)
+    execute(args.FILE, acc, args.verbose, args)
+    return 0
+
+def process_files(include_files, exclude_files):
+  include_list = include(include_files)
+  if (not exclude_files):
     exclude_list = []
   else:
-    exclude_list = exclude(args.FILE, args.DIR, args.add, args.rm)
+    exclude_list = exclude(exclude_files)
   acc = join(include_list, exclude_list)
-  insert_headers(args.FILE, acc)
+  return acc
 
-def include(textfile, directory, include_files, exclude_files):
+def execute(textfile, acc, verbosity, cmd):
+  if (verbosity):
+    log(textfile, cmd, acc, verbosity)
+  else:
+    insert_headers(textfile, acc, verbosity)
+
+def log(textfile, cmd, acc, verbosity):
+  logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
+  logging.info('Command-line Input:' + str(cmd))
+  logging.debug('Identified ' + str(len(acc)) + ' files')
+  list_files(acc)
+  input("Press Enter to continue")
+  logging.info('Prepending headers:')
+  insert_headers(textfile, acc, verbosity)
+
+def list_files(list):
+  count = 0
+  for filename in list:
+    count = count + 1 
+    print ( str(count) + '. ' + filename)
+
+def include(include_files):
   include_list = []
   for item in include_files:
     for name in glob2.glob(item):
       include_list.append(name)
   return include_list
 
-def exclude(textfile, directory, include_files, exclude_files):
+def exclude(exclude_files):
   exclude_list = []
   for item in exclude_files:
     for name in glob2.glob(item):
@@ -63,11 +91,13 @@ def join(include, exclude):
 
 '''More optimized solution to add headers to file'''
 
-def insert_headers(textfile, append_list):
+def insert_headers(textfile, append_list, verbosity):
   with open(textfile, 'r') as original:data1 = original.read()
   for filename in append_list:
     with open(filename, 'r') as modified:data2 = modified.read()
     with open(filename, 'w') as original:data = original.write(data1 + data2)
+    if (verbosity):
+      print(filename)
 
 '''Append headers by first copying header to a temp tile, copy the content 
 of the file that header is being appended to'''
@@ -85,9 +115,6 @@ def add_headers(textfile, directory, include_files, exclude_files):
            f1.write(line)
           f1.close()
         f2.close()
-
-def error():
-  return 0
 
 if __name__ == "__main__":
   main()
