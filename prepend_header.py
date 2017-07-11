@@ -4,7 +4,7 @@ to source files in software repositories
 Command line usage: prepend_header FILE DIR [options]
 '''
 
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import argparse
 import glob2
@@ -59,15 +59,13 @@ def log(textfile, cmd, acc, verbosity):
   logging.info('Command-line Input:' + str(cmd))
   logging.debug('Identified ' + str(len(acc)) + ' files')
   list_files(acc)
-  input("Press Enter to continue")
+  input('Press Enter to continue')
   logging.info('Prepending headers:')
   insert_headers(textfile, acc, verbosity)
 
 def list_files(list):
-  count = 0
   for filename in list:
-    count = count + 1 
-    print ( str(count) + '. ' + filename)
+    print (filename)
 
 def include(include_files):
   include_list = []
@@ -89,32 +87,14 @@ def join(include, exclude):
       include.remove(excludefile)
   return include
 
-'''More optimized solution to add headers to file'''
-
 def insert_headers(textfile, append_list, verbosity):
   with open(textfile, 'r') as original:data1 = original.read()
   for filename in append_list:
     with open(filename, 'r') as modified:data2 = modified.read()
-    with open(filename, 'w') as original:data = original.write(data1 + data2)
+    with open(filename, 'w') as original:data3 = original.write(data1)
+    with open(filename, 'a') as original:data3 = original.write(data2)
     if (verbosity):
       print(filename)
-
-'''Append headers by first copying header to a temp tile, copy the content 
-of the file that header is being appended to'''
-
-def add_headers(textfile, directory, include_files, exclude_files):
-  with open(textfile) as f:
-    for filename in include_files:
-      with open("temp.tmp", "w") as f1:
-        for line in f:
-          f1.write(line)
-        f.close()
-        f1.write("\n\n") 
-        with open("test.txt") as f2:
-          for line in f2:
-           f1.write(line)
-          f1.close()
-        f2.close()
 
 if __name__ == "__main__":
   main()
