@@ -12,21 +12,22 @@ import logging
 import os
 
 def main():
+  verbosity_setup()
   parse()
 
 def parse():
-  parser = argparse.ArgumentParser(description='Append to files in directories')
+  parser = argparse.ArgumentParser(description = 'Append to files in directories')
   parser.add_argument('FILE', type = str, 
-                  help='the header to be prepend to each source file (a plain-text file).')
-  parser.add_argument('DIR', type = str,
-                  help='the path to the directory that contains the files to which the header will be prepended.')
-  parser.add_argument('--add', action="append",
-                  help='add files matching the specified glob (prefixed with the base directory) to the processing queue')
-  parser.add_argument('--rm', action="append",
-                  help= 'remove files matching the specified glob (prefixed with the base directory) from the processing queue')
-  parser.add_argument('--verbose', action = "store_true",
+                  help = 'the header to be prepend to each source file (a plain-text file).')
+  parser.add_argument('DIR', type = str, 
+                  help = 'the path to the directory that contains the files to which the header will be prepended.')
+  parser.add_argument('--add', action = "append", 
+                  help = 'add files matching the specified glob (prefixed with the base directory) to the processing queue')
+  parser.add_argument('--rm', action = "append", 
+                  help = 'remove files matching the specified glob (prefixed with the base directory) from the processing queue')
+  parser.add_argument('--verbose', action = "store_true", 
                   help = "raise the verbosity level (log debug and information messages to the standard error stream)")
-  parser.add_argument('--version', action = 'version', version='%(prog)s version 1.0',
+  parser.add_argument('--version', action = 'version', version = '%(prog)s version 1.0', 
                   help = "display the version")
   args = parser.parse_args()
 
@@ -35,27 +36,29 @@ def parse():
   if (not args.add):
     logging.error('--add field is required')
   elif (args.add):
-    acc = process_files(args.add, args.rm)
-    execute(args.FILE, acc, args.verbose, args)
+    acc = process_files(args.DIR, args.add, args.rm)
+    execute(args.FILE, args.DIR, acc, args.verbose, args)
     return 0
 
-def process_files(include_files, exclude_files):
-  include_list = include(include_files)
+def process_files(directory, include_files, exclude_files):
+  include_list = include(directory, include_files)
   if (not exclude_files):
     exclude_list = []
   else:
-    exclude_list = exclude(exclude_files)
+    exclude_list = exclude(directory, exclude_files)
   acc = join(include_list, exclude_list)
   return acc
 
-def execute(textfile, acc, verbosity, cmd):
+def execute(textfile, directory, acc, verbosity, cmd):
   if (verbosity):
     log(textfile, cmd, acc, verbosity)
   else:
     insert_headers(textfile, acc, verbosity)
 
-def log(textfile, cmd, acc, verbosity):
+def verbosity_setup():
   logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
+
+def log(textfile, cmd, acc, verbosity):
   logging.info('Command-line Input:' + str(cmd))
   logging.debug('Identified ' + str(len(acc)) + ' files')
   list_files(acc)
@@ -67,17 +70,19 @@ def list_files(list):
   for filename in list:
     print (filename)
 
-def include(include_files):
+def include(directory, include_files):
   include_list = []
-  for item in include_files:
-    for name in glob2.glob(item):
+  for i in include_files:
+    include = str(directory) + i
+    for name in glob2.glob(include):
       include_list.append(name)
   return include_list
 
-def exclude(exclude_files):
+def exclude(directory, exclude_files):
   exclude_list = []
-  for item in exclude_files:
-    for name in glob2.glob(item):
+  for e in exclude_files:
+    exclude = str(directory) + e
+    for name in glob2.glob(exclude):
       exclude_list.append(name)
   return exclude_list
 
