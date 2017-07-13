@@ -85,12 +85,14 @@ def verbosity_setup():
   logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
 
 def log(textfile, cmd, acc, verbosity):
-  logging.info('Command-line Input:' + str(cmd))
-  logging.debug('Identified ' + str(len(acc)) + ' files')
-  list_files(acc)
-  input('Press Enter to continue')
-  logging.info('Prepending headers:')
-  insert_headers(textfile, acc, verbosity)
+  logging.warning('Command-line Input:' + str(cmd))
+  if (len(acc) == 0):
+    logging.error('No file is found')
+  else:
+    logging.info('Identified ' + str(len(acc)) + ' files')
+    list_files(acc)
+    logging.info('Prepending headers:')
+    insert_headers(textfile, acc, verbosity)
 
 def list_files(list):
   for filename in list:
@@ -119,12 +121,12 @@ def join(include, exclude):
   return include
 
 def insert_headers(textfile, append_list, verbosity):
-  with open(textfile, 'r') as original:data1 = original.read()
-  for filename in append_list:
-    with open(filename, 'r') as modified:data2 = modified.read()
-    with open(filename, 'w') as original:data3 = original.write(data1)
-    with open(filename, 'a') as original:data3 = original.write(data2)
-    if (verbosity):
+   with open(textfile, 'r') as original:data1 = original.read()
+   for filename in append_list:
+     with open(filename, 'r') as modified:data2 = modified.read()
+     with open(filename, 'w') as original:data3 = original.write(data1)
+     with open(filename, 'a') as original:data3 = original.write(data2)
+     if (verbosity):
       print(filename)
 
 if __name__ == '__main__':
