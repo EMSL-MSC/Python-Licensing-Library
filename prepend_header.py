@@ -27,7 +27,7 @@ def parse():
   parser.add_argument('--rm', action = 'append', 
                   help = 'remove files matching the specified glob (prefixed with the base directory) from the processing queue')
   parser.add_argument('--path', type = str, 
-                  help = 'replacing template path with actual project path')
+                  help = 'replace template path with actual project path')
   parser.add_argument('--verbose', action = 'store_true', 
                   help = 'raise the verbosity level (log debug and information messages to the standard error stream)')
   parser.add_argument('--version', action = 'version', version = '%(prog)s version 1.0', 
@@ -41,7 +41,8 @@ def parse():
   elif (args.add):
     acc = process_files(args.DIR, args.add, args.rm)
     execute(args.FILE, args.DIR, acc, args.verbose, args)
-    identify_project_paths(args.DIR, acc, args.path)
+    if (args.path):
+      identify_project_paths(args.DIR, acc, args.path)
     return 0
 
 def identify_project_paths(directory, acc_list, path):
@@ -90,7 +91,7 @@ def log(textfile, cmd, acc, verbosity):
     logging.error('No file is found')
   else:
     logging.info('Identified ' + str(len(acc)) + ' files')
-    list_files(acc)
+    list_files(acc) 
     logging.info('Prepending headers:')
     insert_headers(textfile, acc, verbosity)
 
