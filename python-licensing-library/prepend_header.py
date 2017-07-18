@@ -57,7 +57,7 @@ def append_paths_to_files(files, path):
   for key, value in files.items():
     s = open(key).read()
     s = s.replace(str(path), value)
-    f = open(key, 'w')
+    f = open(key, 'w', newline='\n')
     f.write(s)
     f.close()
 
@@ -122,11 +122,11 @@ def join(include, exclude):
   return include
 
 def insert_headers(textfile, append_list, verbosity):
-   with open(textfile, 'r') as original:data1 = original.read()
+   with open(textfile, 'r', newline='\n') as original:data1 = original.read()
    for filename in append_list:
-     with open(filename, 'r') as modified:data2 = modified.read()
-     with open(filename, 'w') as original:data3 = original.write(data1)
-     with open(filename, 'a') as original:data3 = original.write(data2)
+     with open(filename, 'r', newline='\n') as modified:data2 = modified.read()
+     with open(filename, 'w', newline='\n') as original:data3 = original.write(data1)
+     with open(filename, 'a', newline='\n') as original:data3 = original.write(data2)
      if (verbosity):
       print(filename)
 
