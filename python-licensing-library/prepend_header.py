@@ -1,8 +1,6 @@
-'''
-This program is a command-line tool that allows users to add copyright and legal notices
-to source files in software repositories
-Command line usage: prepend_header FILE DIR [options]
-'''
+# Python-Licensing-Library: prepend_header.py
+# Copyright (c) 2017 Pacific Northwest National Laboratory.
+# See LICENSE for details.
 
 #!/usr/bin/env python
 

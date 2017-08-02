@@ -1,3 +1,7 @@
+# Python-Licensing-Library: setup.py
+# Copyright (c) 2017 Pacific Northwest National Laboratory.
+# See LICENSE for details.
+
 #!/usr/bin/env python
 
 from distutils.core import setup
