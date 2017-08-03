@@ -16,6 +16,7 @@ setup(
   packages = ['python-licensing-library'],
   long_description = open('README.txt').read(),
   package_data = {'':['requirements.txt']},
+  data_files = [('', ['LICENSE.txt'])],
   include_package_data = True,
   install_requires = [
       'glob2==0.5',
@@ -23,6 +24,7 @@ setup(
   classifiers = [
       'Intended Audience :: PNNL Software Developers',
       'Programming Language :: Python ::3',
-      'Topic :: Software Development :: Libraries'
+      'Topic :: Software Development :: Libraries',
+      'License :: Educational Community License 2.0: Pacific Northwest National Laboratory'
   ]
 )

@@ -10,12 +10,12 @@ The library can be used in Microsoft Windows, Linux, and macOS operating systems
 Usage:
 prepend_header.py FILE DIR [options]
 
-Where:
+where
 FILE = the header to be prepend to each source file (a plain-text file);
 DIR = the base directory for the software repository; and,
 [options] = the command-line options.
 
-Options include:
+options include
 --help = display the help message
 --version = display the version
 --verbose = raise the verbosity level (log debug and information messages to the standard error stream)
