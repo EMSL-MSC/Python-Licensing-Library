@@ -4,7 +4,7 @@ Copyright (C) 2017 Pacific Northwest National Laboratory.
 
 ## Description
 
-The purpose of this library is to provide software developers to quickly prepend headers to selected source file.
+The purpose of this library is to provide software developers to quickly prepend headers to selected source files.
 It provides several options to allow flexibility and control over files to which the headers will be prepended.
 
 The library can be used in Microsoft Windows, Linux, and macOS operating systems.
