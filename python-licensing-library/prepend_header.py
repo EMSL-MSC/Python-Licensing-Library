@@ -1,8 +1,12 @@
-# Python-Licensing-Library: prepend_header.py
-# Copyright (c) 2017 Pacific Northwest National Laboratory.
-# See LICENSE for details.
-
 #!/usr/bin/env python
+
+# Python-Licensing-Library: python-licensing-library/prepend_header.py
+#
+# Copyright (c) 2017 Pacific Northwest National Laboratory (see the file NOTICE).
+#
+# This material is released under the ECL-2.0 license (see the file LICENSE).
+#
+# This material is released under warranty (see the file WARRANTY).
 
 import argparse
 import glob2
@@ -16,19 +20,19 @@ def main():
 
 def parse():
   parser = argparse.ArgumentParser(description = 'Append to files in directories')
-  parser.add_argument('FILE', type = str, 
+  parser.add_argument('FILE', type = str,
                   help = 'the header to be prepend to each source file (a plain-text file).')
-  parser.add_argument('DIR', type = str, 
+  parser.add_argument('DIR', type = str,
                   help = 'the path to the directory that contains the files to which the header will be prepended.')
-  parser.add_argument('--add', action = 'append', 
+  parser.add_argument('--add', action = 'append',
                   help = 'add files matching the specified glob (prefixed with the base directory) to the processing queue')
-  parser.add_argument('--rm', action = 'append', 
+  parser.add_argument('--rm', action = 'append',
                   help = 'remove files matching the specified glob (prefixed with the base directory) from the processing queue')
-  parser.add_argument('--path', type = str, 
+  parser.add_argument('--path', type = str,
                   help = 'replace template path with actual project path')
-  parser.add_argument('--verbose', action = 'store_true', 
+  parser.add_argument('--verbose', action = 'store_true',
                   help = 'raise the verbosity level (log debug and information messages to the standard error stream)')
-  parser.add_argument('--version', action = 'version', version = '%(prog)s version 1.0', 
+  parser.add_argument('--version', action = 'version', version = '%(prog)s version 1.0',
                   help = 'display the version')
   args = parser.parse_args()
 
@@ -89,7 +93,7 @@ def log(textfile, cmd, acc, verbosity):
     logging.error('No file is found')
   else:
     logging.info('Identified ' + str(len(acc)) + ' files')
-    list_files(acc) 
+    list_files(acc)
     logging.info('Prepending headers:')
     insert_headers(textfile, acc, verbosity)
 
